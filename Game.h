@@ -1,12 +1,15 @@
 #ifndef GAME_H
 #define GAME_H
-#include "GameObject.h"
-#include "InputManager.h"
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "InputManager.h"
+#include "GameObject.h"
+#include "TextureManager.h"
 
 class Game {
 	private:
@@ -14,6 +17,7 @@ class Game {
 		bool isRunning;
 		std::vector<GameObject*> objects;
 		InputManager* input;
+		TextureManager* textureManager;
 	public:
 		Game();
 		~Game();

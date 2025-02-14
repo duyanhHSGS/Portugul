@@ -1,6 +1,5 @@
 #include "Game.h"
 
-
 SDL_Renderer* Game::renderer = nullptr;
 Game::Game()
 	: window(nullptr), input(nullptr),
@@ -36,13 +35,16 @@ bool Game::init(const std::string& title, int xpos, int ypos, int width, int hei
 		return false;
 	}
 	std::cout << "Renderer Created!" << std::endl;
-	TextureManager::SetRenderer(renderer);
 	input = new InputManager();
 	std::cout << "Input: Listening!" << std::endl;
+	textureManager = new TextureManager();
 
+	
 
-	GameObject* apolos = new GameObject("img/apple.png", 10, 10);
-	GameObject* apolos2 = new GameObject("img/apple.png", 30, 30);
+	textureManager->Load("apple","img/apple.png");
+	GameObject* apolos = new GameObject("apple", 10, 10, 30, 30);
+	GameObject* apolos2 = new GameObject("apple", 10, 10, 30, 30);
+	
 	objects.push_back(apolos);
 	objects.push_back(apolos2);
 
@@ -62,28 +64,29 @@ void Game::handleEvents() {
 	input->resetForFrame();
 	if (input->isKeyDown(SDL_SCANCODE_A)) {
 		std::cout << "The 'A' key is being held down." << std::endl;
-		objects[0]->x--;
+		objects[0]->x-=3;
 	}
 	if (input->isKeyDown(SDL_SCANCODE_W)) {
 		std::cout << "The 'W' key is being held down." << std::endl;
-		objects[0]->y--;
+		objects[0]->y-=3;
 	}
 	if (input->isKeyDown(SDL_SCANCODE_S)) {
 		std::cout << "The 'S' key is being held down." << std::endl;
-		objects[0]->y++;
+		objects[0]->y+=3;
 	}
 	if (input->isKeyDown(SDL_SCANCODE_D)) {
 		std::cout << "The 'D' key is being held down." << std::endl;
-		objects[0]->x++;
+		objects[0]->x+=3;
 	}
 	if (input->isMouseButtonDown(SDL_BUTTON_RIGHT)) {
 		std::cout << "The Right Mouse Button is being held down." << std::endl;
 		objects[1]->x=mx;
 		objects[1]->y=my;
 	}
-	if (input->isMouseButtonDown(SDL_BUTTON_LEFT)) {
-		std::cout << "Clicked at: (" << mx << ", "    << my  << ")." << std::endl;
-	}
+	if (input->isMouseClicked(SDL_BUTTON_LEFT)) {
+        input->getMousePosition(mx, my);
+        std::cout << "Clicked at: (" << mx << ", "    << my  << ")." << std::endl;
+    }
 }
 
 
@@ -117,6 +120,11 @@ void Game::clean() {
 	std::cout << "All Objects Destroyed!" << std::endl;
 	delete input;
 	std::cout << "Input: Stopped Listening!" << std::endl;
+	
+	textureManager->Clean();
+	delete textureManager;
+	std::cout << "All stored textures cleared!" << std::endl;
+	
 	SDL_DestroyRenderer(renderer);
 	std::cout << "Renderer Destroyed!" << std::endl;
 	SDL_DestroyWindow(window);
