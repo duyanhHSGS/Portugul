@@ -3,14 +3,17 @@
 InputManager::InputManager() {
     keyStates = SDL_GetKeyboardState(NULL);
     mouseState = 0;
+    prevMouseState = 0; 
 }
 
-InputManager::~InputManager() {}
+InputManager::~InputManager() {
+}
 
 void InputManager::resetForFrame() {
-    SDL_PumpEvents();
+    SDL_PumpEvents(); 
     keyStates = SDL_GetKeyboardState(NULL);
-    mouseState = SDL_GetMouseState(NULL, NULL);
+    prevMouseState = mouseState; 
+    mouseState = SDL_GetMouseState(NULL, NULL); 
 }
 
 bool InputManager::isKeyDown(SDL_Scancode key) {
@@ -31,4 +34,8 @@ bool InputManager::isMouseButtonUp(int button) {
 
 void InputManager::getMousePosition(int &x, int &y) {
     SDL_GetMouseState(&x, &y);
+}
+
+bool InputManager::isMouseClicked(int button) {
+    return (mouseState & SDL_BUTTON(button)) && !(prevMouseState & SDL_BUTTON(button));
 }
