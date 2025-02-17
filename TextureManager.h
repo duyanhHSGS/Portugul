@@ -6,7 +6,6 @@
 #include <iostream>
 #include <map>
 
-
 class TextureManager {
 	public:
 		bool Load(std::string id, std::string filename);
@@ -14,8 +13,8 @@ class TextureManager {
 		void DrawFrame(std::string id, SDL_Rect src, SDL_Rect dest, int currentRow, int currentFrame, int frameWidth, int frameHeight);
 		void ClearFromTextureMap(std::string id);
 		void Clean();
-	private:
 		static std::map<std::string, SDL_Texture*> textureMap;
+	private:
 		SDL_Texture* LoadTexture(std::string filename);
 		void Draw(SDL_Texture* texture, SDL_Rect src, SDL_Rect dest);
 };
