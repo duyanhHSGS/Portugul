@@ -17,7 +17,6 @@ void GameObject::Update() {
 
     srcRect.x = frameWidth * currentFrame;
     srcRect.y = frameHeight * currentRow;
-    
     destRect.x = x;
     destRect.y = y;
 }
