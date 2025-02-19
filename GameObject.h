@@ -6,18 +6,21 @@
 class GameObject {
 	private:
 		std::string textureID;
-		TextureManager* textureManager;
 		int currentFrame;
 		int currentRow;
 		int frameWidth;
 		int frameHeight;
+		int totalFrames;
+		int animationSpeed;
 		SDL_Rect srcRect;
 	public:
+		static TextureManager* textureManager;
 		int x, y;
 		SDL_Rect destRect;
-		GameObject(std::string textureID, int x, int y, int frameWidth, int frameHeight);
+		GameObject(std::string textureID, int x, int y, int frameWidth, int frameHeight, int totalFrames, int animationSpeed);
 		~GameObject();
 		void Update();
 		void Render();
 };
+
 #endif // GAME_OBJECT_H

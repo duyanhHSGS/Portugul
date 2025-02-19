@@ -6,14 +6,18 @@
 #include <iostream>
 #include <map>
 
-
 class TextureManager {
 	public:
+		TextureManager();
+		~TextureManager();
+		void Init();
 		bool Load(std::string id, std::string filename);
 		SDL_Texture* GetTexture(std::string id);
 		void DrawFrame(std::string id, SDL_Rect src, SDL_Rect dest, int currentRow, int currentFrame, int frameWidth, int frameHeight);
 		void ClearFromTextureMap(std::string id);
 		void Clean();
+		void printAllTextures();
+		bool checkExists(std::string id);
 	private:
 		static std::map<std::string, SDL_Texture*> textureMap;
 		SDL_Texture* LoadTexture(std::string filename);

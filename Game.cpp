@@ -5,6 +5,7 @@ Game::Game()
 	: window(nullptr), input(nullptr),
 	  isRunning(false) {}
 Game::~Game() {
+	clean();
 }
 
 bool Game::init(const std::string& title, int xpos, int ypos, int width, int height, bool fullscreen) {
@@ -37,20 +38,28 @@ bool Game::init(const std::string& title, int xpos, int ypos, int width, int hei
 	std::cout << "Renderer Created!" << std::endl;
 	input = new InputManager();
 	std::cout << "Input: Listening!" << std::endl;
+
+
 	textureManager = new TextureManager();
-
+	textureManager->Init();
 	
+	textureManager->Load("char2", "img/char2.png");
+	textureManager->Load("apple", "img/apple.png");
 
-	textureManager->Load("apple","img/apple.png");
-	GameObject* apolos = new GameObject("apple", 10, 10, 30, 30);
-	GameObject* apolos2 = new GameObject("apple", 10, 10, 30, 30);
+	// Print loaded textures
+	textureManager->printAllTextures();
 	
+	GameObject::textureManager = textureManager;
+	GameObject* apolos = new GameObject("char2", 10, 10, 32, 32, 4, 100);
+	GameObject* apolos2 = new GameObject("char3", 100, 100, 32, 32, 1, 100);
+
 	objects.push_back(apolos);
 	objects.push_back(apolos2);
 
 	isRunning = true;
 	return true;
 }
+
 
 int mx=1, my=1; //mouse pos
 void Game::handleEvents() {
@@ -84,11 +93,12 @@ void Game::handleEvents() {
 		objects[1]->y=my;
 	}
 	if (input->isMouseClicked(SDL_BUTTON_LEFT)) {
-        input->getMousePosition(mx, my);
-        std::cout << "Clicked at: (" << mx << ", "    << my  << ")." << std::endl;
-    }
+		input->getMousePosition(mx, my);
+		std::cout << "Clicked at: (" << mx << ", "    << my  << ")." << std::endl;
+		// clr this shit
+		textureManager->printAllTextures();
+	}
 }
-
 
 void Game::update() {
 	for ( auto object : objects ) {
@@ -99,18 +109,18 @@ void Game::update() {
 void Game::render() {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255 );
 	SDL_RenderClear(renderer);
+	//render objects
 	for ( auto object : objects ) {
 		object->Render();
 	}
-
+	//render mouse
 	input->getMousePosition(mx, my);
 	SDL_Rect gameMouse = { mx-5, my-5, 10, 10 };
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &gameMouse);
-
+	
 	SDL_RenderPresent(renderer);
 }
-
 
 void Game::clean() {
 	for ( auto object : objects ) {
@@ -120,11 +130,11 @@ void Game::clean() {
 	std::cout << "All Objects Destroyed!" << std::endl;
 	delete input;
 	std::cout << "Input: Stopped Listening!" << std::endl;
-	
+
 	textureManager->Clean();
 	delete textureManager;
 	std::cout << "All stored textures cleared!" << std::endl;
-	
+
 	SDL_DestroyRenderer(renderer);
 	std::cout << "Renderer Destroyed!" << std::endl;
 	SDL_DestroyWindow(window);
