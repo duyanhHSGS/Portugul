@@ -5,6 +5,7 @@ Game::Game()
 	: window(nullptr), input(nullptr),
 	  isRunning(false) {}
 Game::~Game() {
+	clean();
 }
 
 bool Game::init(const std::string& title, int xpos, int ypos, int width, int height, bool fullscreen) {
@@ -40,17 +41,17 @@ bool Game::init(const std::string& title, int xpos, int ypos, int width, int hei
 
 
 	textureManager = new TextureManager();
-	textureManager->Load("char1", "img/char1.png");
+	textureManager->Init();
+	
+	textureManager->Load("char2", "img/char2.png");
 	textureManager->Load("apple", "img/apple.png");
 
 	// Print loaded textures
-	std::cout << "Loaded textures:" << std::endl;
-	for (const auto& pair : TextureManager::textureMap) {
-		std::cout << pair.first << std::endl;
-	}
-
-	GameObject* apolos = new GameObject("char1", 10, 10, 30, 30, 8, 100);
-	GameObject* apolos2 = new GameObject("apple", 100, 100, 30, 30, 1, 100);
+	textureManager->printAllTextures();
+	
+	GameObject::textureManager = textureManager;
+	GameObject* apolos = new GameObject("char2", 10, 10, 32, 32, 4, 100);
+	GameObject* apolos2 = new GameObject("char3", 100, 100, 32, 32, 1, 100);
 
 	objects.push_back(apolos);
 	objects.push_back(apolos2);
@@ -95,13 +96,9 @@ void Game::handleEvents() {
 		input->getMousePosition(mx, my);
 		std::cout << "Clicked at: (" << mx << ", "    << my  << ")." << std::endl;
 		// clr this shit
-		std::cout << "All textures:" << std::endl;
-		for (auto& maps : TextureManager::textureMap) {
-			std::cout << maps.first << std::endl;
-		}
+		textureManager->printAllTextures();
 	}
 }
-
 
 void Game::update() {
 	for ( auto object : objects ) {
@@ -116,15 +113,14 @@ void Game::render() {
 	for ( auto object : objects ) {
 		object->Render();
 	}
-
+	//render mouse
 	input->getMousePosition(mx, my);
 	SDL_Rect gameMouse = { mx-5, my-5, 10, 10 };
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &gameMouse);
-
+	
 	SDL_RenderPresent(renderer);
 }
-
 
 void Game::clean() {
 	for ( auto object : objects ) {
@@ -136,6 +132,7 @@ void Game::clean() {
 	std::cout << "Input: Stopped Listening!" << std::endl;
 
 	textureManager->Clean();
+	delete textureManager;
 	std::cout << "All stored textures cleared!" << std::endl;
 
 	SDL_DestroyRenderer(renderer);

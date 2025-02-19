@@ -2,6 +2,29 @@
 #include "Game.h"
 
 std::map<std::string, SDL_Texture*> TextureManager::textureMap;
+TextureManager::TextureManager() {
+	std::cout << "An instance of TextureManager was created!" << std::endl;
+}
+TextureManager::~TextureManager() {
+	std::cout << "An instance of TextureManager was destroyed!" << std::endl;
+}
+void TextureManager::Init() {
+	if (!(textureMap.find("default") == textureMap.end())) {
+		std::cout << "Warning: the default texture is already loaded!" << std::endl;
+		return;
+	}
+	if (!Load("default","img/default.png")) {
+		std::cout << "Error: Cannot load the default texture!" << std::endl;
+		return;
+	}
+	std::cout << "The default texture is loadded successfully!" << std::endl;
+	return;
+}
+
+bool TextureManager::checkExists(std::string id) {
+	return textureMap.find(id) != textureMap.end();
+}
+
 bool TextureManager::Load(std::string id, std::string filename) {
 	SDL_Texture* texture = LoadTexture(filename);
 	if (texture == nullptr) {
@@ -72,12 +95,24 @@ void TextureManager::DrawFrame(
     int frameWidth,
     int frameHeight
 ) {
+	auto it = textureMap.find(id);
+	if (it == textureMap.end()) {
+		std::cerr << "Could not find any texture with ID: " << id << std::endl;
+		return;
+	}
 	src.x = frameWidth * currentFrame;
 	src.y = frameHeight * currentRow;
 	src.w = frameWidth;
 	src.h = frameHeight;
-	SDL_Texture* texture = textureMap[id];
+	SDL_Texture* texture = it->second;
 	Draw(texture, src, dest);
+}
+
+void TextureManager::printAllTextures() {
+	std::cout << "All textures:" << std::endl;
+	for (auto& maps : textureMap) {
+		std::cout << maps.first << std::endl;
+	}
 }
 // private
 SDL_Texture* TextureManager::LoadTexture(std::string filename) {

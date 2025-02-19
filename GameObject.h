@@ -13,8 +13,8 @@ class GameObject {
 		int totalFrames;
 		int animationSpeed;
 		SDL_Rect srcRect;
-		TextureManager* textureManager;
 	public:
+		static TextureManager* textureManager;
 		int x, y;
 		SDL_Rect destRect;
 		GameObject(std::string textureID, int x, int y, int frameWidth, int frameHeight, int totalFrames, int animationSpeed);
