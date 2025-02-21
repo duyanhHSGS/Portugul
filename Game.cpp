@@ -42,26 +42,28 @@ bool Game::init(const std::string& title, int xpos, int ypos, int width, int hei
 
 	textureManager = new TextureManager();
 	textureManager->Init();
-	
+
 	textureManager->Load("char2", "img/char2.png");
 	textureManager->Load("apple", "img/apple.png");
+	textureManager->Load("player", "img/player.png");
 
+	
 	// Print loaded textures
 	textureManager->printAllTextures();
-	
+
 	GameObject::textureManager = textureManager;
-	GameObject* apolos = new GameObject("char2", 10, 10, 32, 32, 4, 100);
-	GameObject* apolos2 = new GameObject("char3", 100, 100, 32, 32, 1, 100);
+	GameObject* apolos = new GameObject("char2", 10, 10, 64, 64, 4, 100);
+	GameObject* apolos2 = new GameObject("char3", 100, 100, 64, 64, 1, 100);
+	Player* player = new Player("player", 4, 500, 500);
 
 	objects.push_back(apolos);
 	objects.push_back(apolos2);
+	objects.push_back(player);
 
 	isRunning = true;
 	return true;
 }
 
-
-int mx=1, my=1; //mouse pos
 void Game::handleEvents() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -70,55 +72,60 @@ void Game::handleEvents() {
 			isRunning = false;
 		}
 	}
+	Player* player = (Player*)(objects[2]);
+	player->handleInput(input);
 	input->resetForFrame();
-	if (input->isKeyDown(SDL_SCANCODE_A)) {
-		std::cout << "The 'A' key is being held down." << std::endl;
-		objects[0]->x-=3;
-	}
-	if (input->isKeyDown(SDL_SCANCODE_W)) {
-		std::cout << "The 'W' key is being held down." << std::endl;
-		objects[0]->y-=3;
-	}
-	if (input->isKeyDown(SDL_SCANCODE_S)) {
-		std::cout << "The 'S' key is being held down." << std::endl;
-		objects[0]->y+=3;
-	}
-	if (input->isKeyDown(SDL_SCANCODE_D)) {
-		std::cout << "The 'D' key is being held down." << std::endl;
-		objects[0]->x+=3;
-	}
-	if (input->isMouseButtonDown(SDL_BUTTON_RIGHT)) {
-		std::cout << "The Right Mouse Button is being held down." << std::endl;
-		objects[1]->x=mx;
-		objects[1]->y=my;
-	}
-	if (input->isMouseClicked(SDL_BUTTON_LEFT)) {
-		input->getMousePosition(mx, my);
-		std::cout << "Clicked at: (" << mx << ", "    << my  << ")." << std::endl;
-		// clr this shit
-		textureManager->printAllTextures();
-	}
 }
 
 void Game::update() {
-	for ( auto object : objects ) {
-		object->Update();
-	}
+    auto destroyer = objects[0];
+    std::vector<GameObject*> toBeDeleted;
+
+    for (auto object : objects) {
+        object->update();
+        
+        // If object is inactive, increase its timer
+        if (!object->isActive) {
+            object->inactiveTime += 0.016f; // Assuming 60 FPS (~16ms per frame)
+            if (object->inactiveTime >= 3.0f) {
+                toBeDeleted.push_back(object); // Mark for deletion
+            }
+            continue; // Skip further checks
+        }
+
+        // Check collision and deactivate object
+        if (destroyer->collidesWith(object) && object != destroyer) {
+            std::cout << "Object #0 is colliding with another object!" << std::endl;
+            std::cout << "Deactivating that object!" << std::endl;
+            object->isActive = false;
+        }
+    }
+
+    // Delete inactive objects
+    for (auto object : toBeDeleted) {
+        auto it = std::find(objects.begin(), objects.end(), object);
+        if (it != objects.end()) {
+            delete *it;
+            objects.erase(it);
+        }
+    }
 }
 
+
+int mx=1, my=1; //mouse pos
 void Game::render() {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255 );
 	SDL_RenderClear(renderer);
 	//render objects
 	for ( auto object : objects ) {
-		object->Render();
+		object->render();
 	}
 	//render mouse
 	input->getMousePosition(mx, my);
 	SDL_Rect gameMouse = { mx-5, my-5, 10, 10 };
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &gameMouse);
-	
+
 	SDL_RenderPresent(renderer);
 }
 

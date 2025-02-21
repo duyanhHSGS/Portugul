@@ -6,10 +6,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "InputManager.h"
 #include "GameObject.h"
 #include "TextureManager.h"
+#include "Player.h"
 
 class Game {
 	private:
