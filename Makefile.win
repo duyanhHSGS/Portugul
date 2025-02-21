@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = main.o Game.o mainold.o TextureManager.o GameObject.o InputManager.o
-LINKOBJ  = main.o Game.o mainold.o TextureManager.o GameObject.o InputManager.o
+OBJ      = main.o Game.o mainold.o TextureManager.o GameObject.o InputManager.o Player.o
+LINKOBJ  = main.o Game.o mainold.o TextureManager.o GameObject.o InputManager.o Player.o
 LIBS     = -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib" -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2-2.32.0/x86_64-w64-mingw32/lib" -L"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2_image-2.8.5/x86_64-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -g3
 INCS     = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2-2.32.0/x86_64-w64-mingw32/include/SDL2" -I"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2_image-2.8.5/x86_64-w64-mingw32/include/SDL2"
 CXXINCS  = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++" -I"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2-2.32.0/x86_64-w64-mingw32/include/SDL2" -I"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2_image-2.8.5/x86_64-w64-mingw32/include/SDL2"
@@ -41,3 +41,6 @@ GameObject.o: GameObject.cpp
 
 InputManager.o: InputManager.cpp
 	$(CPP) -c InputManager.cpp -o InputManager.o $(CXXFLAGS)
+
+Player.o: Player.cpp
+	$(CPP) -c Player.cpp -o Player.o $(CXXFLAGS)

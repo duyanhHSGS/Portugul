@@ -8,7 +8,6 @@ class InputManager {
         const Uint8* keyStates;
         Uint32 mouseState;
         Uint32 prevMouseState; 
-        
     public:
         InputManager();
         ~InputManager();
