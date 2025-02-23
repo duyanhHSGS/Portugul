@@ -8,21 +8,23 @@
 #include <vector>
 #include <algorithm>
 
+#include "Map.h"
 #include "InputManager.h"
-#include "GameObject.h"
 #include "TextureManager.h"
-#include "Player.h"
+
+//forward
+class Map;
 
 class Game {
 	private:
 		SDL_Window* window;
 		bool isRunning;
-		std::vector<GameObject*> objects;
-		InputManager* input;
+		std::vector<Map*> maps; //A game contains many maps
 		TextureManager* textureManager;
 	public:
 		Game();
 		~Game();
+		InputManager* input;
 		bool init(const std::string& title, int x, int y, int width, int height, bool fullscreen);
 		void handleEvents();
 		void update();

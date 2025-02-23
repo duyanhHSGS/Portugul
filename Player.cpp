@@ -1,9 +1,12 @@
 #include "Player.h"
+#include <iostream>
+#include <cmath>
+
 // del this later
 #include "Game.h"
 
-Player::Player(std::string textureID, int totalFrame, int x, int y)
-	: GameObject(textureID, x, y, 64, 64, 4, 100),
+Player::Player(std::string textureID, int totalFrame, int x, int y, Map* parentMap)
+	: GameObject(textureID, x, y, 64, 64, 4, 100,parentMap),
 	  movementSpeed(5.0f),
 	  state("Idle"),
 	  health(100.0f),
@@ -11,6 +14,10 @@ Player::Player(std::string textureID, int totalFrame, int x, int y)
 	  direction("Left") {
 	hitbox = { x, y, 64, 64 };
 	std::cout << "Player created!" << std::endl;
+}
+
+Player::~Player() {
+	std::cout << "Player destroyed!" << std::endl;
 }
 
 void Player::handleInput(InputManager* input) {
@@ -36,7 +43,7 @@ void Player::handleInput(InputManager* input) {
 		state = "Idle";
 	}
 	if (input->isMouseClicked(SDL_BUTTON_LEFT) && state != "Attacking") {
-		std::cout << "The player is attacking!" << std::endl;
+//		std::cout << "The player is attacking!" << std::endl;
 		state = "Attacking";
 		currentFrame = 0;
 		attackStartTime = SDL_GetTicks();
@@ -49,7 +56,7 @@ void Player::update() {
 		velocityY = 0.0f;
 		Uint32 currentTime = SDL_GetTicks();
 		Uint32 elapsed = currentTime - attackStartTime;
-		currentFrame = elapsed / animationSpeed; 
+		currentFrame = elapsed / animationSpeed;
 		if (currentFrame >= totalFrames) {
 			currentFrame = 0;
 			state = "Idle";
@@ -59,7 +66,13 @@ void Player::update() {
 		y += velocityY;
 		currentFrame = (SDL_GetTicks() / animationSpeed) % totalFrames;
 	}
+	destRect.x = x;
+	destRect.y = y;
+	// Print player's destRect and position
+	std::cout << "Player destRect: (" << destRect.x << ", " << destRect.y << ")\n";
+	std::cout << "Player Position (x, y): (" << x << ", " << y << ")\n";
 }
+
 
 void Player::render() {
 	SDL_Texture* tex = textureManager->GetTexture(textureID);
