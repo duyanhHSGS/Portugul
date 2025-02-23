@@ -1,4 +1,5 @@
 #include "TextureManager.h"
+#include <vector>
 #include "Game.h"
 
 std::map<std::string, SDL_Texture*> TextureManager::textureMap;
@@ -94,6 +95,16 @@ void TextureManager::DrawFrame(
     src.y = frameHeight * currentRow;
     src.w = frameWidth;
     src.h = frameHeight;
+    SDL_Texture* texture = it->second;
+    Draw(texture, src, dest);
+}
+
+void TextureManager::DrawTile(const std::string& id, SDL_Rect src, SDL_Rect dest) {
+    auto it = textureMap.find(id);
+    if (it == textureMap.end()) {
+        std::cerr << "Could not find any texture with ID: " << id << std::endl;
+        return;
+    }
     SDL_Texture* texture = it->second;
     Draw(texture, src, dest);
 }

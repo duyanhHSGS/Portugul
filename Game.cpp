@@ -1,9 +1,12 @@
 #include "Game.h"
 
+Map* map1 = nullptr;
+
 SDL_Renderer* Game::renderer = nullptr;
 Game::Game()
 	: window(nullptr), input(nullptr),
 	  isRunning(false) {}
+
 Game::~Game() {
 	clean();
 }
@@ -37,33 +40,30 @@ bool Game::init(const std::string& title, int xpos, int ypos, int width, int hei
 	}
 	std::cout << "Renderer Created!" << std::endl;
 	input = new InputManager();
-	std::cout << "Input: Listening!" << std::endl;
+	std::cout << "Input: Listening!" << std::endl; 
 
 
 	textureManager = new TextureManager();
 	textureManager->Init();
-
 	textureManager->Load("char2", "img/char2.png");
 	textureManager->Load("apple", "img/apple.png");
 	textureManager->Load("player", "img/player.png");
-
 	
-	// Print loaded textures
+	GameObject::textureManager = textureManager;
+	Map::textureManager = textureManager;
+	
 	textureManager->printAllTextures();
 
-	GameObject::textureManager = textureManager;
-	GameObject* apolos = new GameObject("char2", 10, 10, 64, 64, 4, 100);
-	GameObject* apolos2 = new GameObject("char3", 100, 100, 64, 64, 1, 100);
-	Player* player = new Player("player", 4, 500, 500);
+	map1 = new Map("Map1","img/map1.png",600,800,32,32,this);
+	map1->loadMap("maps/map1.txt");
+	maps.push_back(map1);
 
-	objects.push_back(apolos);
-	objects.push_back(apolos2);
-	objects.push_back(player);
+
 
 	isRunning = true;
 	return true;
 }
-
+int mx=1, my=1; //mouse pos
 void Game::handleEvents() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -72,69 +72,45 @@ void Game::handleEvents() {
 			isRunning = false;
 		}
 	}
-	Player* player = (Player*)(objects[2]);
-	player->handleInput(input);
+	if (input->isMouseClicked(SDL_BUTTON_LEFT)) {
+		input->getMousePosition(mx,my);
+		std::cout << "Mouse clicked at (" << mx << "," <<my << ")" << std::endl;
+	}
 	input->resetForFrame();
 }
 
 void Game::update() {
-    auto destroyer = objects[0];
-    std::vector<GameObject*> toBeDeleted;
-
-    for (auto object : objects) {
-        object->update();
-        
-        // If object is inactive, increase its timer
-        if (!object->isActive) {
-            object->inactiveTime += 0.016f; // Assuming 60 FPS (~16ms per frame)
-            if (object->inactiveTime >= 3.0f) {
-                toBeDeleted.push_back(object); // Mark for deletion
-            }
-            continue; // Skip further checks
-        }
-
-        // Check collision and deactivate object
-        if (destroyer->collidesWith(object) && object != destroyer) {
-            std::cout << "Object #0 is colliding with another object!" << std::endl;
-            std::cout << "Deactivating that object!" << std::endl;
-            object->isActive = false;
-        }
-    }
-
-    // Delete inactive objects
-    for (auto object : toBeDeleted) {
-        auto it = std::find(objects.begin(), objects.end(), object);
-        if (it != objects.end()) {
-            delete *it;
-            objects.erase(it);
-        }
-    }
+	for (auto map : maps) {
+		map->update();
+	}
 }
 
 
-int mx=1, my=1; //mouse pos
 void Game::render() {
+	//render background
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255 );
 	SDL_RenderClear(renderer);
-	//render objects
-	for ( auto object : objects ) {
-		object->render();
+	//render maps
+	for (auto map : maps) {
+		map->render();
 	}
 	//render mouse
 	input->getMousePosition(mx, my);
 	SDL_Rect gameMouse = { mx-5, my-5, 10, 10 };
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &gameMouse);
-
+	//implement more later
 	SDL_RenderPresent(renderer);
 }
 
 void Game::clean() {
-	for ( auto object : objects ) {
-		delete object;
+	for (auto map : maps) {
+		map->clearObjects();
+		delete map;
 	}
-	objects.clear();
-	std::cout << "All Objects Destroyed!" << std::endl;
+	maps.clear();
+	std::cout << "All Maps Destroyed!" << std::endl;
+
 	delete input;
 	std::cout << "Input: Stopped Listening!" << std::endl;
 

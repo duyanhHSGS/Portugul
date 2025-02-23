@@ -1,15 +1,15 @@
-# Project: SDL2_Game
+# Project: Portugul
 # Makefile created by Embarcadero Dev-C++ 6.3
 
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = main.o Game.o mainold.o TextureManager.o GameObject.o InputManager.o Player.o
-LINKOBJ  = main.o Game.o mainold.o TextureManager.o GameObject.o InputManager.o Player.o
-LIBS     = -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib" -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2-2.32.0/x86_64-w64-mingw32/lib" -L"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2_image-2.8.5/x86_64-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -g3
-INCS     = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2-2.32.0/x86_64-w64-mingw32/include/SDL2" -I"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2_image-2.8.5/x86_64-w64-mingw32/include/SDL2"
-CXXINCS  = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++" -I"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2-2.32.0/x86_64-w64-mingw32/include/SDL2" -I"C:/Users/Laptop/Desktop/proj/SDL2_Game/SDL2_image-2.8.5/x86_64-w64-mingw32/include/SDL2"
-BIN      = SDL2_Game.exe
+OBJ      = ../Portugul/main.o ../Portugul/Game.o ../Portugul/mainold.o ../Portugul/TextureManager.o ../Portugul/GameObject.o ../Portugul/InputManager.o ../Portugul/Player.o ../Portugul/Map.o
+LINKOBJ  = ../Portugul/main.o ../Portugul/Game.o ../Portugul/mainold.o ../Portugul/TextureManager.o ../Portugul/GameObject.o ../Portugul/InputManager.o ../Portugul/Player.o ../Portugul/Map.o
+LIBS     = -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib" -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/Users/Laptop/Desktop/proj/Portugul/SDL2-2.32.0/x86_64-w64-mingw32/lib" -L"C:/Users/Laptop/Desktop/proj/Portugul/SDL2_image-2.8.5/x86_64-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -g3
+INCS     = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"C:/Users/Laptop/Desktop/proj/Portugul/SDL2-2.32.0/x86_64-w64-mingw32/include/SDL2" -I"C:/Users/Laptop/Desktop/proj/Portugul/SDL2_image-2.8.5/x86_64-w64-mingw32/include/SDL2"
+CXXINCS  = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++" -I"C:/Users/Laptop/Desktop/proj/Portugul/SDL2-2.32.0/x86_64-w64-mingw32/include/SDL2" -I"C:/Users/Laptop/Desktop/proj/Portugul/SDL2_image-2.8.5/x86_64-w64-mingw32/include/SDL2"
+BIN      = Portugul.exe
 CXXFLAGS = $(CXXINCS) -g3
 CFLAGS   = $(INCS) -g3
 DEL      = C:\Program Files (x86)\Embarcadero\Dev-Cpp\devcpp.exe INTERNAL_DEL
@@ -24,23 +24,26 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-main.o: main.cpp
-	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+../Portugul/main.o: main.cpp
+	$(CPP) -c main.cpp -o ../Portugul/main.o $(CXXFLAGS)
 
-Game.o: Game.cpp
-	$(CPP) -c Game.cpp -o Game.o $(CXXFLAGS)
+../Portugul/Game.o: Game.cpp
+	$(CPP) -c Game.cpp -o ../Portugul/Game.o $(CXXFLAGS)
 
-mainold.o: mainold.cpp
-	$(CPP) -c mainold.cpp -o mainold.o $(CXXFLAGS)
+../Portugul/mainold.o: mainold.cpp
+	$(CPP) -c mainold.cpp -o ../Portugul/mainold.o $(CXXFLAGS)
 
-TextureManager.o: TextureManager.cpp
-	$(CPP) -c TextureManager.cpp -o TextureManager.o $(CXXFLAGS)
+../Portugul/TextureManager.o: TextureManager.cpp
+	$(CPP) -c TextureManager.cpp -o ../Portugul/TextureManager.o $(CXXFLAGS)
 
-GameObject.o: GameObject.cpp
-	$(CPP) -c GameObject.cpp -o GameObject.o $(CXXFLAGS)
+../Portugul/GameObject.o: GameObject.cpp
+	$(CPP) -c GameObject.cpp -o ../Portugul/GameObject.o $(CXXFLAGS)
 
-InputManager.o: InputManager.cpp
-	$(CPP) -c InputManager.cpp -o InputManager.o $(CXXFLAGS)
+../Portugul/InputManager.o: InputManager.cpp
+	$(CPP) -c InputManager.cpp -o ../Portugul/InputManager.o $(CXXFLAGS)
 
-Player.o: Player.cpp
-	$(CPP) -c Player.cpp -o Player.o $(CXXFLAGS)
+../Portugul/Player.o: Player.cpp
+	$(CPP) -c Player.cpp -o ../Portugul/Player.o $(CXXFLAGS)
+
+../Portugul/Map.o: Map.cpp
+	$(CPP) -c Map.cpp -o ../Portugul/Map.o $(CXXFLAGS)
