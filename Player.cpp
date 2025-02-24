@@ -67,33 +67,27 @@ void Player::update() {
 		y += velocityY;
 		currentFrame = (SDL_GetTicks() / animationSpeed) % totalFrames;
 	}
-	destRect.x = x - map->getOffsetX();
-	destRect.y = y - map->getOffsetY();
-
-	// Print player's destRect and position
-//	std::cout << "Player destRect: (" << destRect.x << ", " << destRect.y << ")\n";
-//	std::cout << "Player Position (x, y): (" << x << ", " << y << ")\n";
+    destRect.x = x - map->getOffsetX();
+    destRect.y = y - map->getOffsetY();
 }
-
 
 void Player::render() {
-	SDL_Texture* tex = textureManager->GetTexture(textureID);
-	if (!tex) {
-		std::cerr << "Texture not found for ID: " << textureID << std::endl;
-		return;
-	}
-	int renderRow = 0;
-	if (state == "Idle") renderRow = 0;
-	if (state == "Moving") renderRow = 1;
-	if (state == "Attacking") renderRow = 3;
+    SDL_Texture* tex = textureManager->GetTexture(textureID);
+    if (!tex) {
+        std::cerr << "Texture not found for ID: " << textureID << std::endl;
+        return;
+    }
+    int renderRow = 0;
+    if (state == "Idle") renderRow = 0;
+    if (state == "Moving") renderRow = 1;
+    if (state == "Attacking") renderRow = 3;
 
-	srcRect.y = renderRow * frameHeight;
-	srcRect.x = frameWidth * currentFrame;
-	destRect.x = x;
-	destRect.y = y;
-	if (direction == "Right") {
-		SDL_RenderCopyEx(Game::renderer, tex, &srcRect, &destRect, 0, NULL, SDL_FLIP_HORIZONTAL);
-	} else {
-		SDL_RenderCopy(Game::renderer, tex, &srcRect, &destRect);
-	}
+    srcRect.y = renderRow * frameHeight;
+    srcRect.x = frameWidth * currentFrame;
+    if (direction == "Right") {
+        SDL_RenderCopyEx(Game::renderer, tex, &srcRect, &destRect, 0, NULL, SDL_FLIP_HORIZONTAL);
+    } else {
+        SDL_RenderCopy(Game::renderer, tex, &srcRect, &destRect);
+    }
 }
+

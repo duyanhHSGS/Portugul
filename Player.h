@@ -14,7 +14,7 @@ class Player : public GameObject {
 	private:
 		float movementSpeed, velocityX, velocityY;
 		std::string state;
-		std::string direction;
+		std::string direction; 
 		SDL_Rect hitbox;
 		float health;
 		Uint32 attackStartTime;
