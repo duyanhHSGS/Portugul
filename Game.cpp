@@ -5,14 +5,22 @@ Map* map1 = nullptr;
 SDL_Renderer* Game::renderer = nullptr;
 Game::Game()
 	: window(nullptr), input(nullptr),
-	  isRunning(false) {}
+	  isRunning(false), windowWidth(0), windowHeight(0) {}
 
 Game::~Game() {
 	clean();
 }
 
-bool Game::init(const std::string& title, int xpos, int ypos, int width, int height, bool fullscreen) {
-	int flags = fullscreen ? SDL_WINDOW_FULLSCREEN : 0;
+int Game::getWindowWidth() {
+	return windowWidth;
+}
+int Game::getWindowHeight() {
+	return windowHeight;
+}
+
+bool Game::init(const std::string& title, int xpos, int ypos, int windowWidth, int windowHeight, bool fullscreen) {
+	this->windowWidth = windowWidth;
+	this->windowHeight = windowHeight;
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		std::cerr << "SDL Initialization Failed: " << SDL_GetError() << std::endl;
 		return false;
@@ -26,7 +34,13 @@ bool Game::init(const std::string& title, int xpos, int ypos, int width, int hei
 	}
 	std::cout << "SDL Image Initiated!" << std::endl;
 	std::cout << "Creating Window" << std::endl;
-	window = SDL_CreateWindow(title.c_str(), xpos, ypos, width, height, flags);
+
+
+	int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+	if (fullscreen) {
+		flags |= SDL_WINDOW_FULLSCREEN;
+	}
+	window = SDL_CreateWindow(title.c_str(), xpos, ypos, windowWidth, windowHeight, flags);
 	if (!window) {
 		std::cerr << "Window Creation Failed: " << SDL_GetError() << std::endl;
 		return false;
@@ -40,7 +54,7 @@ bool Game::init(const std::string& title, int xpos, int ypos, int width, int hei
 	}
 	std::cout << "Renderer Created!" << std::endl;
 	input = new InputManager();
-	std::cout << "Input: Listening!" << std::endl; 
+	std::cout << "Input: Listening!" << std::endl;
 
 
 	textureManager = new TextureManager();
@@ -48,36 +62,47 @@ bool Game::init(const std::string& title, int xpos, int ypos, int width, int hei
 	textureManager->Load("char2", "img/char2.png");
 	textureManager->Load("apple", "img/apple.png");
 	textureManager->Load("player", "img/player.png");
-	
+
 	GameObject::textureManager = textureManager;
 	Map::textureManager = textureManager;
-	
 	textureManager->printAllTextures();
 
 	map1 = new Map("Map1","img/map1.png",600,800,32,32,this);
 	map1->loadMap("maps/map1.txt");
 	maps.push_back(map1);
 
-
-
 	isRunning = true;
 	return true;
 }
+
 int mx=1, my=1; //mouse pos
 void Game::handleEvents() {
-	SDL_Event event;
-	while (SDL_PollEvent(&event)) {
-		if (event.type == SDL_QUIT) {
-			std::cout << "SDL_QUIT event received, shutting down..." << std::endl;
-			isRunning = false;
-		}
-	}
-	if (input->isMouseClicked(SDL_BUTTON_LEFT)) {
-		input->getMousePosition(mx,my);
-		std::cout << "Mouse clicked at (" << mx << "," <<my << ")" << std::endl;
-	}
-	input->resetForFrame();
+    input->handleEvents(); // Process events inside InputManager
+
+    if (input->isQuitRequested()) {
+        std::cout << "Quit event received, shutting down..." << std::endl;
+        isRunning = false;
+    }
+
+    // Handle fullscreen toggle
+    if (input->isKeyPressed(SDL_SCANCODE_F12)) {
+        static bool isFullscreen = false;
+        isFullscreen = !isFullscreen;
+        SDL_SetWindowFullscreen(window, isFullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+        std::cout << "Toggled fullscreen: " << (isFullscreen ? "ON" : "OFF") << std::endl;
+    }
+
+    // Handle mouse click
+    if (input->isMouseClicked(SDL_BUTTON_LEFT)) {
+        input->getMousePosition(mx, my);
+        std::cout << "Mouse clicked at (" << mx << "," << my << ")" << std::endl;
+    }
+
+    input->resetForFrame();
 }
+
+
+
 
 void Game::update() {
 	for (auto map : maps) {

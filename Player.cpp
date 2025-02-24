@@ -6,7 +6,7 @@
 #include "Game.h"
 
 Player::Player(std::string textureID, int totalFrame, int x, int y, Map* parentMap)
-	: GameObject(textureID, x, y, 64, 64, 4, 100,parentMap),
+	: GameObject(textureID, x, y, 32, 32, 6, 100,parentMap),
 	  movementSpeed(5.0f),
 	  state("Idle"),
 	  health(100.0f),
@@ -43,12 +43,13 @@ void Player::handleInput(InputManager* input) {
 		state = "Idle";
 	}
 	if (input->isMouseClicked(SDL_BUTTON_LEFT) && state != "Attacking") {
-//		std::cout << "The player is attacking!" << std::endl;
+		std::cout << "The player is attacking!" << std::endl;
 		state = "Attacking";
 		currentFrame = 0;
 		attackStartTime = SDL_GetTicks();
 	}
 }
+	
 
 void Player::update() {
 	if (state == "Attacking") {
@@ -66,11 +67,12 @@ void Player::update() {
 		y += velocityY;
 		currentFrame = (SDL_GetTicks() / animationSpeed) % totalFrames;
 	}
-	destRect.x = x;
-	destRect.y = y;
+	destRect.x = x - map->getOffsetX();
+	destRect.y = y - map->getOffsetY();
+
 	// Print player's destRect and position
-	std::cout << "Player destRect: (" << destRect.x << ", " << destRect.y << ")\n";
-	std::cout << "Player Position (x, y): (" << x << ", " << y << ")\n";
+//	std::cout << "Player destRect: (" << destRect.x << ", " << destRect.y << ")\n";
+//	std::cout << "Player Position (x, y): (" << x << ", " << y << ")\n";
 }
 
 
@@ -83,7 +85,7 @@ void Player::render() {
 	int renderRow = 0;
 	if (state == "Idle") renderRow = 0;
 	if (state == "Moving") renderRow = 1;
-	if (state == "Attacking") renderRow = 2;
+	if (state == "Attacking") renderRow = 3;
 
 	srcRect.y = renderRow * frameHeight;
 	srcRect.x = frameWidth * currentFrame;

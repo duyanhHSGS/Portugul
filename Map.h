@@ -29,7 +29,7 @@ class Map {
 
 		void render();
 		void update();
-		void updateCamera(const SDL_Rect& playerRect, int screenWidth, int screenHeight);
+		void updateCamera(const SDL_Rect& playerRect);
 		void clearObjects();
 
 	private:
