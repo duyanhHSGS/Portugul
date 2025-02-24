@@ -53,10 +53,18 @@ bool InputManager::isQuitRequested() {
 }
 
 void InputManager::handleEvents() {
+    windowResized = false;
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
             quitRequested = true;
+        } else if (event.type == SDL_WINDOWEVENT) {
+            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                newWindowWidth = event.window.data1;
+                newWindowHeight = event.window.data2;
+                windowResized = true;
+            }
         }
     }
 }
+
