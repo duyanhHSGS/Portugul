@@ -26,7 +26,6 @@ Map::Map(const std::string& mapName, const std::string& tilesetPath, int mapWidt
 	player = new Player("player", 4, 0, 0,this);
 	objects.push_back(apolos);
 	objects.push_back(apolos2);
-	objects.push_back(player);
 }
 
 Map::~Map() {
@@ -66,55 +65,59 @@ void Map::update() {
     // Update player input and objects in the map.
     InputManager* input = game->input;
     player->handleInput(input);
-    
+    player->update();
     for (auto object : objects) {
         object->update();
     }
-    updateCamera(player->destRect);
+    updateCamera();
 }
 
-void Map::updateCamera(const SDL_Rect& playerRect) {
-	offsetX = 0;
-	offsetY = 0;
-//	int targetOffsetX = playerRect.x + playerRect.w / 2 - game->getWindowWidth() / 2;
-//	int targetOffsetY = playerRect.y + playerRect.h / 2 - game->getWindowHeight() / 2;
-//    float interpolationFactor = 0.05f; // Adjust for smoothness
-//    offsetX += (targetOffsetX - offsetX) * interpolationFactor;
-//    offsetY += (targetOffsetY - offsetY) * interpolationFactor;
+void Map::updateCamera() {
+    int targetOffsetX = player->x + player->destRect.w / 2 - game->getWindowWidth() / 2;
+    int targetOffsetY = player->y + player->destRect.h / 2 - game->getWindowHeight() / 2;
+    // smooth
+	float interpolationFactor = 0.1f;
+    offsetX += (targetOffsetX - offsetX) * interpolationFactor;
+    offsetY += (targetOffsetY - offsetY) * interpolationFactor;
+    offsetX = std::max(0, std::min(offsetX, mapWidth * tileWidth - game->getWindowWidth()));
+    offsetY = std::max(0, std::min(offsetY, mapHeight * tileHeight - game->getWindowHeight()));
 }
+
 
 void Map::render() {
-	// render map
-	if (!tileset) {
-		std::cerr << "No tileset loaded for map " << mapName << std::endl;
-		return;
-	}
-	for (int row = 0; row < tiles.size(); ++row) {
-		for (int col = 0; col < tiles[row].size(); ++col) {
-			int tileID = tiles[row][col];
-			SDL_Rect src;
-			src.x = (tileID % tilesetColumns) * tileWidth;  
-			src.y = (tileID / tilesetColumns) * tileHeight; 
-			src.w = tileWidth;
-			src.h = tileHeight;
-			SDL_Rect dest;
-			dest.x = col * tileWidth - offsetX;
-			dest.y = row * tileHeight - offsetY;
-			dest.w = tileWidth;
-			dest.h = tileHeight;
-			SDL_RenderCopy(game->renderer, tileset, &src, &dest);
-		}
-	}
-	//render objects
-	for (auto object : objects) {
-		object->render();
-	}
+    // Render map tiles
+    for (int row = 0; row < tiles.size(); ++row) {
+        for (int col = 0; col < tiles[row].size(); ++col) {
+            int tileID = tiles[row][col];
+            SDL_Rect src;
+            src.x = (tileID % tilesetColumns) * tileWidth;  
+            src.y = (tileID / tilesetColumns) * tileHeight; 
+            src.w = tileWidth;
+            src.h = tileHeight;
+            SDL_Rect dest;
+            dest.x = col * tileWidth - offsetX;
+            dest.y = row * tileHeight - offsetY;
+            dest.w = tileWidth;
+            dest.h = tileHeight;
+            SDL_RenderCopy(game->renderer, tileset, &src, &dest);
+        }
+    }
+
+    // Render objects
+    for (auto object : objects) {
+        object->render();
+    }
+
+    // Render player
+    player->render();
 }
+
 
 void Map::clearObjects() {
 	for (auto object : objects) {
 		delete object;
 	}
+	delete player;
 	objects.clear();
 	std::cout << "All objects from Map (" << mapName << ") destroyed" << std::endl;
 }
