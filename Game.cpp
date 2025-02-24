@@ -77,39 +77,34 @@ bool Game::init(const std::string& title, int xpos, int ypos, int windowWidth, i
 
 int mx=1, my=1; //mouse pos
 void Game::handleEvents() {
-    input->handleEvents(); // Process events inside InputManager
-
-    if (input->isQuitRequested()) {
-        std::cout << "Quit event received, shutting down..." << std::endl;
-        isRunning = false;
-    }
-
-    // Handle fullscreen toggle
-    if (input->isKeyPressed(SDL_SCANCODE_F12)) {
-        static bool isFullscreen = false;
-        isFullscreen = !isFullscreen;
-        SDL_SetWindowFullscreen(window, isFullscreen ? SDL_WINDOW_FULLSCREEN : 0);
-        std::cout << "Toggled fullscreen: " << (isFullscreen ? "ON" : "OFF") << std::endl;
-    }
-
-    // Handle mouse click
-    if (input->isMouseClicked(SDL_BUTTON_LEFT)) {
-        input->getMousePosition(mx, my);
-        std::cout << "Mouse clicked at (" << mx << "," << my << ")" << std::endl;
-    }
-
-    input->resetForFrame();
+	input->handleEvents();
+	if (input->isQuitRequested()) {
+		std::cout << "Quit event received, shutting down..." << std::endl;
+		isRunning = false;
+	}
+	if (input->windowResized) {
+		windowWidth = input->newWindowWidth;
+		windowHeight = input->newWindowHeight;
+		std::cout << "Window resized to: " << windowWidth << "x" << windowHeight << std::endl;
+	}
+	if (input->isKeyPressed(SDL_SCANCODE_F12)) {
+		static bool isFullscreen = false;
+		isFullscreen = !isFullscreen;
+		SDL_SetWindowFullscreen(window, isFullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+		std::cout << "Toggled fullscreen: " << (isFullscreen ? "ON" : "OFF") << std::endl;
+	}
+	if (input->isMouseClicked(SDL_BUTTON_LEFT)) {
+		input->getMousePosition(mx, my);
+		std::cout << "Mouse clicked at (" << mx << "," << my << ")" << std::endl;
+	}
+	input->resetForFrame();
 }
-
-
-
 
 void Game::update() {
 	for (auto map : maps) {
 		map->update();
 	}
 }
-
 
 void Game::render() {
 	//render background

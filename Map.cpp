@@ -21,7 +21,7 @@ Map::Map(const std::string& mapName, const std::string& tilesetPath, int mapWidt
 	tilesetColumns = textureWidth / tileWidth;
 	std::cout << "Map's texture sheet ' (" << mapName << ") loaded from " << tilesetPath << std::endl;
 
-	GameObject* apolos = new GameObject("char2", 10, 10, 32, 32, 4, 100, this);
+	GameObject* apolos = new GameObject("char2", 0, 0, 32, 32, 4, 100, this);
 	GameObject* apolos2 = new GameObject("char3", 100, 100, 32, 32, 1, 100, this);
 	player = new Player("player", 4, 0, 0,this);
 	objects.push_back(apolos);
@@ -31,7 +31,6 @@ Map::Map(const std::string& mapName, const std::string& tilesetPath, int mapWidt
 Map::~Map() {
 	std::cout << "Map with name' (" << mapName << ") destroyed!" << std::endl;
 }
-
 
 void Map::loadMap(const std::string& filePath) {
 	std::ifstream file(filePath);
@@ -76,13 +75,12 @@ void Map::updateCamera() {
     int targetOffsetX = player->x + player->destRect.w / 2 - game->getWindowWidth() / 2;
     int targetOffsetY = player->y + player->destRect.h / 2 - game->getWindowHeight() / 2;
     // smooth
-	float interpolationFactor = 0.1f;
+	float interpolationFactor = 0.01f;
     offsetX += (targetOffsetX - offsetX) * interpolationFactor;
     offsetY += (targetOffsetY - offsetY) * interpolationFactor;
-    offsetX = std::max(0, std::min(offsetX, mapWidth * tileWidth - game->getWindowWidth()));
-    offsetY = std::max(0, std::min(offsetY, mapHeight * tileHeight - game->getWindowHeight()));
+//    offsetX = std::max(0, std::min(offsetX, mapWidth * tileWidth - game->getWindowWidth()));
+//    offsetY = std::max(0, std::min(offsetY, mapHeight * tileHeight - game->getWindowHeight()));
 }
-
 
 void Map::render() {
     // Render map tiles
@@ -111,7 +109,6 @@ void Map::render() {
     // Render player
     player->render();
 }
-
 
 void Map::clearObjects() {
 	for (auto object : objects) {

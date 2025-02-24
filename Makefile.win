@@ -4,8 +4,9 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = ../Portugul/main.o ../Portugul/Game.o ../Portugul/mainold.o ../Portugul/TextureManager.o ../Portugul/GameObject.o ../Portugul/InputManager.o ../Portugul/Player.o ../Portugul/Map.o
-LINKOBJ  = ../Portugul/main.o ../Portugul/Game.o ../Portugul/mainold.o ../Portugul/TextureManager.o ../Portugul/GameObject.o ../Portugul/InputManager.o ../Portugul/Player.o ../Portugul/Map.o
+RES      = ../Portugul/Portugul_private.res
+OBJ      = ../Portugul/main.o ../Portugul/Game.o ../Portugul/mainold.o ../Portugul/TextureManager.o ../Portugul/GameObject.o ../Portugul/InputManager.o ../Portugul/Player.o ../Portugul/Map.o $(RES)
+LINKOBJ  = ../Portugul/main.o ../Portugul/Game.o ../Portugul/mainold.o ../Portugul/TextureManager.o ../Portugul/GameObject.o ../Portugul/InputManager.o ../Portugul/Player.o ../Portugul/Map.o $(RES)
 LIBS     = -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib" -L"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc -L"C:/Users/Laptop/Desktop/proj/Portugul/SDL2-2.32.0/x86_64-w64-mingw32/lib" -L"C:/Users/Laptop/Desktop/proj/Portugul/SDL2_image-2.8.5/x86_64-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -g3
 INCS     = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"C:/Users/Laptop/Desktop/proj/Portugul/SDL2-2.32.0/x86_64-w64-mingw32/include/SDL2" -I"C:/Users/Laptop/Desktop/proj/Portugul/SDL2_image-2.8.5/x86_64-w64-mingw32/include/SDL2"
 CXXINCS  = -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"C:/Program Files (x86)/Embarcadero/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++" -I"C:/Users/Laptop/Desktop/proj/Portugul/SDL2-2.32.0/x86_64-w64-mingw32/include/SDL2" -I"C:/Users/Laptop/Desktop/proj/Portugul/SDL2_image-2.8.5/x86_64-w64-mingw32/include/SDL2"
@@ -47,3 +48,7 @@ $(BIN): $(OBJ)
 
 ../Portugul/Map.o: Map.cpp
 	$(CPP) -c Map.cpp -o ../Portugul/Map.o $(CXXFLAGS)
+
+../Portugul/Portugul_private.res: Portugul_private.rc 
+	$(WINDRES) -i Portugul_private.rc --input-format=rc -o ../Portugul/Portugul_private.res -O coff 
+
