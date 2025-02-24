@@ -21,10 +21,13 @@ class Game {
 		bool isRunning;
 		std::vector<Map*> maps; //A game contains many maps
 		TextureManager* textureManager;
+		int windowWidth, windowHeight;
 	public:
 		Game();
 		~Game();
 		InputManager* input;
+		int getWindowWidth();
+		int getWindowHeight();
 		bool init(const std::string& title, int x, int y, int width, int height, bool fullscreen);
 		void handleEvents();
 		void update();

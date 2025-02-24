@@ -21,9 +21,9 @@ Map::Map(const std::string& mapName, const std::string& tilesetPath, int mapWidt
 	tilesetColumns = textureWidth / tileWidth;
 	std::cout << "Map's texture sheet ' (" << mapName << ") loaded from " << tilesetPath << std::endl;
 
-	GameObject* apolos = new GameObject("char2", 10, 10, 64, 64, 4, 100, this);
-	GameObject* apolos2 = new GameObject("char3", 100, 100, 64, 64, 1, 100, this);
-	player = new Player("player", 4, 500, 500,this);
+	GameObject* apolos = new GameObject("char2", 10, 10, 32, 32, 4, 100, this);
+	GameObject* apolos2 = new GameObject("char3", 100, 100, 32, 32, 1, 100, this);
+	player = new Player("player", 4, 0, 0,this);
 	objects.push_back(apolos);
 	objects.push_back(apolos2);
 	objects.push_back(player);
@@ -62,35 +62,46 @@ void Map::loadMap(const std::string& filePath) {
 	}
 }
 
+void Map::update() {
+    // Update player input and objects in the map.
+    InputManager* input = game->input;
+    player->handleInput(input);
+    
+    for (auto object : objects) {
+        object->update();
+    }
+    updateCamera(player->destRect);
+}
+
+void Map::updateCamera(const SDL_Rect& playerRect) {
+	offsetX = 0;
+	offsetY = 0;
+//	int targetOffsetX = playerRect.x + playerRect.w / 2 - game->getWindowWidth() / 2;
+//	int targetOffsetY = playerRect.y + playerRect.h / 2 - game->getWindowHeight() / 2;
+//    float interpolationFactor = 0.05f; // Adjust for smoothness
+//    offsetX += (targetOffsetX - offsetX) * interpolationFactor;
+//    offsetY += (targetOffsetY - offsetY) * interpolationFactor;
+}
+
 void Map::render() {
-	// Check if the tileset is loaded.
+	// render map
 	if (!tileset) {
 		std::cerr << "No tileset loaded for map " << mapName << std::endl;
 		return;
 	}
-	// Loop through each row of the tile grid.
 	for (int row = 0; row < tiles.size(); ++row) {
-		// Loop through each column in the current row.
 		for (int col = 0; col < tiles[row].size(); ++col) {
-			int tileID = tiles[row][col];  // Get the tile ID at (row, col)
-
-			// Compute the source rectangle from the tileset:
+			int tileID = tiles[row][col];
 			SDL_Rect src;
-			// Calculate column and row in the tileset image.
-			src.x = (tileID % tilesetColumns) * tileWidth;  // tile's column in the tileset
-			src.y = (tileID / tilesetColumns) * tileHeight;   // tile's row in the tileset
+			src.x = (tileID % tilesetColumns) * tileWidth;  
+			src.y = (tileID / tilesetColumns) * tileHeight; 
 			src.w = tileWidth;
 			src.h = tileHeight;
-
-			// Compute the destination rectangle on the screen:
 			SDL_Rect dest;
-			// Multiply grid position by tile size, then subtract camera offset.
 			dest.x = col * tileWidth - offsetX;
 			dest.y = row * tileHeight - offsetY;
 			dest.w = tileWidth;
 			dest.h = tileHeight;
-
-			// Draw the tile using SDL_RenderCopy.
 			SDL_RenderCopy(game->renderer, tileset, &src, &dest);
 		}
 	}
@@ -99,48 +110,6 @@ void Map::render() {
 		object->render();
 	}
 }
-
-
-void Map::update() {
-	//update objects inside it
-	InputManager* input = game->input;
-	player->handleInput(input);
-	for ( auto object : objects ) {
-		object->update();
-	}
-
-	updateCamera(player->destRect,800,600);
-	//implement more later
-}
-
-void Map::updateCamera(const SDL_Rect& playerRect, int screenWidth, int screenHeight) {
-    // Calculate the offset to center the player
-    int targetOffsetX = playerRect.x + playerRect.w / 2 - screenWidth / 2;
-    int targetOffsetY = playerRect.y + playerRect.h / 2 - screenHeight / 2;
-
-    // Print debug information
-    std::cout << "Player Position: (" << playerRect.x << ", " << playerRect.y << ")\n";
-    std::cout << "Target Offsets: (" << targetOffsetX << ", " << targetOffsetY << ")\n";
-    std::cout << "Current Offsets: (" << offsetX << ", " << offsetY << ")\n";
-
-    // Interpolating for smooth camera movement
-    float interpolationFactor = 0.1f; // Adjust for smoothness
-    offsetX += (targetOffsetX - offsetX) * interpolationFactor;
-    offsetY += (targetOffsetY - offsetY) * interpolationFactor;
-
-    // Print after interpolation
-    std::cout << "Interpolated Offsets: (" << offsetX << ", " << offsetY << ")\n";
-
-    // Clamp to map boundaries
-    offsetX = std::max(0, std::min(offsetX, mapWidth * tileWidth - screenWidth));
-    offsetY = std::max(0, std::min(offsetY, mapHeight * tileHeight - screenHeight));
-
-    // Print final adjusted offsets
-    std::cout << "Adjusted Offsets: (" << offsetX << ", " << offsetY << ")\n";
-}
-
-
-
 
 void Map::clearObjects() {
 	for (auto object : objects) {
